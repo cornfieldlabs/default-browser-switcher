@@ -71,11 +71,15 @@ final class SwitcherView: NSView {
     }
 
     override func draw(_ dirty: NSRect) {
+        let bg = NSBezierPath(roundedRect: bounds.insetBy(dx: 0.5, dy: 0.5), xRadius: 16, yRadius: 16)
+        NSColor.windowBackgroundColor.setFill(); bg.fill()
+        NSColor.separatorColor.setStroke(); bg.lineWidth = 1; bg.stroke()
+
         let center = NSMutableParagraphStyle(); center.alignment = .center
         ("Default Browser" as NSString).draw(
             in: NSRect(x: 0, y: 14, width: bounds.width, height: 20),
             withAttributes: [.font: NSFont.systemFont(ofSize: 13, weight: .semibold),
-                             .foregroundColor: NSColor.secondaryLabelColor, .paragraphStyle: center])
+                             .foregroundColor: NSColor.labelColor, .paragraphStyle: center])
 
         for (i, b) in browsers.enumerated() {
             let r = rowRect(i)
@@ -115,7 +119,7 @@ final class SwitcherView: NSView {
                         : "↑ ↓ choose    ↩ set as default    esc cancel"
         (hint as NSString).draw(
             in: NSRect(x: 0, y: bounds.height - Self.footer + 6, width: bounds.width, height: 18),
-            withAttributes: [.font: NSFont.systemFont(ofSize: 11), .foregroundColor: NSColor.secondaryLabelColor,
+            withAttributes: [.font: NSFont.systemFont(ofSize: 12, weight: .medium), .foregroundColor: NSColor.secondaryLabelColor,
                              .paragraphStyle: center])
     }
 
@@ -181,15 +185,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         window.level = .floating
         window.isMovableByWindowBackground = true
 
-        let fx = NSVisualEffectView(frame: view.frame)
-        fx.material = .hudWindow
-        fx.blendingMode = .behindWindow
-        fx.state = .active
-        fx.wantsLayer = true
-        fx.layer?.cornerRadius = 16
-        fx.layer?.masksToBounds = true
-        fx.addSubview(view)
-        window.contentView = fx
+        window.contentView = view
 
         window.center()
         window.makeKeyAndOrderFront(nil)
